@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Canteen Manager">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2FudGVlbiBNYW5hZ2VyIiwic2hvcnRfbmFtZSI6IkNhbnRlZW4iLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJ0aGVtZV9jb2xvciI6IiM2NjdlZWEiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y5ZmFmYiIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUIzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWdkbWxsZDBKdmVEMGlNQ0F3SURVM01pQTFNVElpSUdacGJHdzlJaU0yTmpkbFpXRWlQanh5WldOMElIZzlJakV3TUNJZ2VUMGlNVEF3SWlCM2FXUjBhRDBpTXpFeUlpQm9aV2xuYUhROUlqTXhNaUlnY25nOUlqRTJJaUJtYVd4c1BTSWpabVptSWk4K1BIUmxlSFFnZUQwaU1qVTJJaUI1UFNJeU5UWWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUdacGJHdzlJaU0yTmpkbFpXRWlQaUJEWVc1MFpXVnVQQzkwWlhoMFBqeDBaWGgwSUhnOUlqSTFOaUlnZVQwaU16QXdJaUIwWlhoMExXRnVZMmh2Y2owaWJXbGtaR3hsSWlCbWFXeHNQU0lqTmpZM1pXVmhJajVOWVc1aFoyVnlQQzkwWlhoMFBqd3ZjM1puUGc9PSIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <title>Canteen Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        .manager-gradient {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .manager-gradient:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+        
+        /* Mobile-first responsive styles */
+        @media (max-width: 768px) {
+            .mobile-padding {
+                padding: 1rem;
+            }
+            .mobile-text-sm {
+                font-size: 0.875rem;
+            }
+            .mobile-grid-1 {
+                grid-template-columns: 1fr;
+            }
+            .mobile-hidden {
+                display: none;
+            }
+            .mobile-full-width {
+                width: 100%;
+            }
+            .mobile-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Touch-friendly buttons */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* PWA styles */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .pwa-install-prompt.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Improved mobile navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 8px;
+            z-index: 50;
+        }
+        
+        /* Better mobile modals */
+        @media (max-width: 768px) {
+            .mobile-modal {
+                margin: 0;
+                max-width: none;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-lg sm:text-xl font-bold">??? Canteen Manager</h1>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-md transition-colors touch-target">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Desktop menu -->
+                <div id="nav-menu" class="hidden md:flex space-x-4">
+                    <button onclick="showLogin()" class="hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md transition-colors touch-target">Login</button>
+                </div>
+                <div id="user-menu" class="hidden md:flex items-center space-x-4">
+                    <span id="welcome-text" class="text-sm hidden sm:inline"></span>
+                    <span id="role-badge" class="px-2 py-1 rounded-full text-xs font-medium"></span>
+                    <button onclick="logout()" class="hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md transition-colors touch-target">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile dropdown menu -->
+        <div id="mobile-dropdown" class="hidden md:hidden bg-white bg-opacity-10 backdrop-blur-sm">
+            <div class="px-4 py-2 space-y-2">
+                <div id="mobile-nav-menu" class="hidden">
+                    <button onclick="showLogin()" class="block w-full text-left hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md transition-colors touch-target">Login</button>
+                </div>
+                <div id="mobile-user-menu" class="hidden space-y-2">
+                    <div class="px-3 py-2">
+                        <div id="mobile-welcome-text" class="text-sm font-medium"></div>
+                        <div id="mobile-role-badge" class="inline-block px-2 py-1 rounded-full text-xs font-medium mt-1"></div>
+                    </div>
+                    <button onclick="logout()" class="block w-full text-left hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md transition-colors touch-target">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center py-4 px-4 sm:py-12 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-6 sm:space-y-8">
+            <div class="text-center">
+                <h2 class="mt-6 text-2xl sm:text-3xl font-extrabold text-gray-900">Welcome Back</h2>
+                <p class="mt-2 text-sm text-gray-600">Sign in to your canteen account</p>
+            </div>
+            <div class="bg-white p-6 sm:p-8 rounded-xl card-shadow">
+                <div id="login-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p class="text-sm text-red-600">? Invalid username or password. Please try again.</p>
+                </div>
+                <form onsubmit="handleLogin(event)" class="space-y-4 sm:space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                        <input type="text" id="username" required class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-base touch-target">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="password" required class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-base touch-target">
+                    </div>
+                    <button type="submit" class="w-full btn-gradient text-white py-3 sm:py-2 px-4 rounded-md hover:opacity-90 transition-opacity font-medium touch-target">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="user-dashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-20 sm:pb-8">
+        <!-- Time Slot Status -->
+        <div class="mb-6 sm:mb-8">
+            <div class="bg-white rounded-xl card-shadow p-4 sm:p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">? Current Time Slots</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div id="lunch-status" class="p-3 sm:p-4 rounded-lg border-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                            <span class="font-medium text-sm sm:text-base">??? Lunch (9:00 AM - 11:00 AM)</span>
+                            <span id="lunch-badge" class="px-2 py-1 rounded-full text-xs font-medium self-start sm:self-auto"></span>
+                        </div>
+                    </div>
+                    <div id="dinner-status" class="p-3 sm:p-4 rounded-lg border-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                            <span class="font-medium text-sm sm:text-base">?? Dinner (4:00 PM - 6:00 PM)</span>
+                            <span id="dinner-badge" class="px-2 py-1 rounded-full text-xs font-medium self-start sm:self-auto"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meal Selection -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <!-- Today's Meals -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Today's Meal Selection</h3>
+                <div class="space-y-6">
+                    <!-- Lunch Selection -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Lunch</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="lunch" value="eat" class="text-primary focus:ring-primary" onchange="updateMealSelection('lunch', 'eat')">
+                                    <span class="ml-2 text-sm">? I'll eat</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="lunch" value="skip" class="text-primary focus:ring-primary" onchange="updateMealSelection('lunch', 'skip')">
+                                    <span class="ml-2 text-sm">? Skip</span>
+                                </label>
+                            </div>
+                            <div id="lunch-type" class="hidden space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="lunch-type" value="veg" class="text-success focus:ring-success" onchange="updateMealType('lunch', 'veg')">
+                                    <span class="ml-2 text-sm">?? Veg</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="lunch-type" value="non-veg" class="text-danger focus:ring-danger" onchange="updateMealType('lunch', 'non-veg')">
+                                    <span class="ml-2 text-sm">?? Non-Veg</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner Selection -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Dinner</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="dinner" value="eat" class="text-primary focus:ring-primary" onchange="updateMealSelection('dinner', 'eat')">
+                                    <span class="ml-2 text-sm">? I'll eat</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="dinner" value="skip" class="text-primary focus:ring-primary" onchange="updateMealSelection('dinner', 'skip')">
+                                    <span class="ml-2 text-sm">? Skip</span>
+                                </label>
+                            </div>
+                            <div id="dinner-type" class="hidden space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="dinner-type" value="veg" class="text-success focus:ring-success" onchange="updateMealType('dinner', 'veg')">
+                                    <span class="ml-2 text-sm">?? Veg</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="dinner-type" value="non-veg" class="text-danger focus:ring-danger" onchange="updateMealType('dinner', 'non-veg')">
+                                    <span class="ml-2 text-sm">?? Non-Veg</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Summary -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Monthly Summary</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                        <span class="text-sm font-medium text-blue-900">Total Lunches</span>
+                        <span id="total-lunches" class="text-lg font-bold text-blue-600">12</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                        <span class="text-sm font-medium text-purple-900">Total Dinners</span>
+                        <span id="total-dinners" class="text-lg font-bold text-purple-600">8</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                        <span class="text-sm font-medium text-green-900">Total Meals</span>
+                        <span id="total-meals" class="text-lg font-bold text-green-600">20</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-yellow-50 rounded-lg border-2 border-yellow-200">
+                        <span class="text-sm font-medium text-yellow-900">Monthly Bill</span>
+                        <span id="monthly-bill" class="text-xl font-bold text-yellow-600">?1,200</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">?? Meal Calendar</h3>
+                <div class="flex items-center space-x-4">
+                    <button onclick="previousMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <h4 id="calendar-month" class="text-lg font-medium text-gray-900">December 2024</h4>
+                    <button onclick="nextMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Calendar Grid -->
+            <div class="grid grid-cols-7 gap-1 mb-4">
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Sun</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Mon</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Tue</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Wed</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Thu</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Fri</div>
+                <div class="p-2 text-center text-sm font-medium text-gray-500">Sat</div>
+            </div>
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+                <!-- Calendar days will be generated here -->
+            </div>
+            
+            <!-- Calendar Legend -->
+            <div class="mt-6 flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-green-200 border border-green-400 rounded"></div>
+                    <span>Both Meals</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-blue-200 border border-blue-400 rounded"></div>
+                    <span>Lunch Only</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-purple-200 border border-purple-400 rounded"></div>
+                    <span>Dinner Only</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-gray-200 border border-gray-400 rounded"></div>
+                    <span>No Meals</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Change Modal -->
+        <div id="password-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full mobile-modal">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">?? Change Password</h3>
+                    <button onclick="closePasswordModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User: <span id="password-change-user" class="font-bold"></span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Role: <span id="password-change-role" class="font-bold"></span></label>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                        <input type="password" id="new-password-input" placeholder="Enter new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <input type="password" id="confirm-password-input" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button onclick="closePasswordModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button onclick="savePasswordChange()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">Change Password</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Future Meal Selection Modal -->
+        <div id="meal-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full mobile-modal">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Select Meals for <span id="modal-date"></span></h3>
+                    <button onclick="closeMealModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Modal Lunch Selection -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">??? Lunch</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-lunch" value="eat" class="text-primary focus:ring-primary">
+                                    <span class="ml-2 text-sm">? I'll eat</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-lunch" value="skip" class="text-primary focus:ring-primary">
+                                    <span class="ml-2 text-sm">? Skip</span>
+                                </label>
+                            </div>
+                            <div id="modal-lunch-type" class="hidden space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-lunch-type" value="veg" class="text-success focus:ring-success">
+                                    <span class="ml-2 text-sm">?? Veg</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-lunch-type" value="non-veg" class="text-danger focus:ring-danger">
+                                    <span class="ml-2 text-sm">?? Non-Veg</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Dinner Selection -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">?? Dinner</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-dinner" value="eat" class="text-primary focus:ring-primary">
+                                    <span class="ml-2 text-sm">? I'll eat</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-dinner" value="skip" class="text-primary focus:ring-primary">
+                                    <span class="ml-2 text-sm">? Skip</span>
+                                </label>
+                            </div>
+                            <div id="modal-dinner-type" class="hidden space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-dinner-type" value="veg" class="text-success focus:ring-success">
+                                    <span class="ml-2 text-sm">?? Veg</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="modal-dinner-type" value="non-veg" class="text-danger focus:ring-danger">
+                                    <span class="ml-2 text-sm">?? Non-Veg</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button onclick="closeMealModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button onclick="saveFutureMeal()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">Save Selection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Settings -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Personal Settings</h3>
+            <div class="max-w-md">
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">?? Change Your Password</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Current Password</label>
+                            <input type="password" id="current-password" placeholder="Enter current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="user-new-password" placeholder="Enter new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="user-confirm-password" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <button onclick="changeOwnPassword()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">
+                            Update Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications" class="bg-white rounded-xl card-shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Notifications</h3>
+            <div id="notification-list" class="space-y-3">
+                <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+                    <p class="text-sm text-blue-800">??? Lunch is ready! Please collect your meal from the canteen.</p>
+                    <p class="text-xs text-blue-600 mt-1">2 minutes ago</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manager Dashboard -->
+    <div id="manager-dashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Manager Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-blue-600" id="manager-total-users">45</div>
+                <div class="text-sm text-gray-600">Total Users</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-green-600" id="manager-today-lunch">32</div>
+                <div class="text-sm text-gray-600">Today's Lunch</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-purple-600" id="manager-today-dinner">28</div>
+                <div class="text-sm text-gray-600">Today's Dinner</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-yellow-600">?<span id="manager-daily-revenue">3,600</span></div>
+                <div class="text-sm text-gray-600">Daily Revenue</div>
+            </div>
+        </div>
+
+        <!-- Manager Controls -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Notifications -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Send Notification</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Notification Message</label>
+                        <textarea id="manager-notification-text" placeholder="Enter notification message..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning focus:border-transparent" rows="4"></textarea>
+                        <button onclick="managerSendNotification()" class="mt-3 manager-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Send to All Users</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">? Quick Actions</h3>
+                <div class="space-y-3">
+                    <button onclick="exportTodayReport()" class="w-full manager-gradient text-white px-4 py-3 rounded-md hover:opacity-90 transition-opacity text-sm font-medium">
+                        ?? Export Today's Report
+                    </button>
+                    <button onclick="exportManagerMonthlyReport()" class="w-full manager-gradient text-white px-4 py-3 rounded-md hover:opacity-90 transition-opacity text-sm font-medium">
+                        ?? Export Monthly Report
+                    </button>
+                    <div class="text-xs text-gray-500 mt-2">
+                        <p>• Today's report includes all meal orders and revenue</p>
+                        <p>• Monthly report includes billing and payment status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Notifications -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Notifications</h3>
+            <div id="manager-notification-list" class="space-y-3">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Manager Personal Settings -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Personal Settings</h3>
+            <div class="max-w-md">
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">?? Change Your Password</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Current Password</label>
+                            <input type="password" id="manager-current-password" placeholder="Enter current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="manager-new-password" placeholder="Enter new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="manager-confirm-password" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning text-sm">
+                        </div>
+                        <button onclick="changeOwnPassword()" class="manager-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">
+                            Update Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Report -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">?? Today's Report</h3>
+                <div class="text-sm text-gray-500">
+                    <span id="today-date"></span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Lunch Orders</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>?? Veg Lunch:</span>
+                            <span class="font-medium">18</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>?? Non-Veg Lunch:</span>
+                            <span class="font-medium">14</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-medium border-t pt-2">
+                            <span>Total Lunch:</span>
+                            <span>32</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Dinner Orders</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>?? Veg Dinner:</span>
+                            <span class="font-medium">15</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>?? Non-Veg Dinner:</span>
+                            <span class="font-medium">13</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-medium border-t pt-2">
+                            <span>Total Dinner:</span>
+                            <span>28</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Billing Report (Manager View) -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">?? Monthly Billing Report</h3>
+                <div class="flex space-x-3">
+                    <select id="manager-report-month" onchange="updateManagerMonthlyReport()" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning text-sm">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                    <select id="manager-report-year" onchange="updateManagerMonthlyReport()" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-warning text-sm">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Monthly Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-blue-600" id="manager-monthly-total-meals">156</div>
+                    <div class="text-sm text-blue-800">Total Meals</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-green-600">?<span id="manager-monthly-total-revenue">9,360</span></div>
+                    <div class="text-sm text-green-800">Total Revenue</div>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-yellow-600">?<span id="manager-monthly-collected">7,200</span></div>
+                    <div class="text-sm text-yellow-800">Collected</div>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-red-600">?<span id="manager-monthly-pending">2,160</span></div>
+                    <div class="text-sm text-red-800">Pending</div>
+                </div>
+            </div>
+            
+            <!-- User Bills Table (Read-only for Manager) -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium text-gray-900">User</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Lunches</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Dinners</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Total Meals</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Amount Due</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Payment Status</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Last Action By</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manager-monthly-bills-table" class="divide-y divide-gray-200">
+                        <!-- Table rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Admin Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-blue-600" id="total-users">45</div>
+                <div class="text-sm text-gray-600">Total Users</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-green-600" id="today-lunch">32</div>
+                <div class="text-sm text-gray-600">Today's Lunch</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-purple-600" id="today-dinner">28</div>
+                <div class="text-sm text-gray-600">Today's Dinner</div>
+            </div>
+            <div class="bg-white rounded-xl card-shadow p-6 text-center">
+                <div class="text-3xl font-bold text-yellow-600">?<span id="daily-revenue">3,600</span></div>
+                <div class="text-sm text-gray-600">Daily Revenue</div>
+            </div>
+        </div>
+
+        <!-- Admin Controls -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- User Management -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">?? User Management</h3>
+                <div class="space-y-4">
+                    <!-- Add New User -->
+                    <div class="border-b pb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-3">Add New User</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                            <input type="text" id="new-username" placeholder="Username" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                            <input type="password" id="new-password" placeholder="Password" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                            <select id="new-user-role" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                                <option value="user">User</option>
+                                <option value="manager">Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <button onclick="addUser()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Add User</button>
+                        </div>
+                    </div>
+                    
+                    <!-- User List -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-sm font-medium text-gray-700">Current Users</h4>
+                            <span id="user-count" class="text-xs text-gray-500"></span>
+                        </div>
+                        <div class="max-h-80 overflow-y-auto border rounded-lg">
+                            <div id="user-list" class="space-y-1 p-2">
+                                <!-- User list will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Settings</h3>
+                <div class="space-y-6">
+                    <!-- Meal Price -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Meal Price (?)</label>
+                        <input type="number" id="meal-price" value="60" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                        <button onclick="updateMealPrice()" class="mt-2 btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Update Price</button>
+                    </div>
+                    
+                    <!-- Time Slot Settings -->
+                    <div class="border-t pt-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">?? Time Slot Settings</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Lunch Start Time</label>
+                                <input type="time" id="lunch-start" value="09:00" class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Lunch End Time</label>
+                                <input type="time" id="lunch-end" value="11:00" class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Dinner Start Time</label>
+                                <input type="time" id="dinner-start" value="16:00" class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Dinner End Time</label>
+                                <input type="time" id="dinner-end" value="18:00" class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                        </div>
+                        <button onclick="updateTimeSlotsSettings()" class="mt-3 btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Update Time Slots</button>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="border-t pt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Send Notification</label>
+                        <textarea id="notification-text" placeholder="Enter notification message..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" rows="3"></textarea>
+                        <button onclick="sendNotification()" class="mt-2 btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Send to All Users</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Notifications -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Notifications</h3>
+            <div id="admin-notification-list" class="space-y-3">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Admin Personal Settings -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">?? Personal Settings</h3>
+            <div class="max-w-md">
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">?? Change Your Password</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Current Password</label>
+                            <input type="password" id="admin-current-password" placeholder="Enter current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="admin-new-password" placeholder="Enter new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="admin-confirm-password" placeholder="Confirm new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <button onclick="changeOwnPassword()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">
+                            Update Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Report -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">?? Today's Report</h3>
+                <button onclick="exportReport()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Export CSV</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Lunch Orders</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>?? Veg Lunch:</span>
+                            <span class="font-medium">18</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>?? Non-Veg Lunch:</span>
+                            <span class="font-medium">14</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-medium border-t pt-2">
+                            <span>Total Lunch:</span>
+                            <span>32</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Dinner Orders</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>?? Veg Dinner:</span>
+                            <span class="font-medium">15</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>?? Non-Veg Dinner:</span>
+                            <span class="font-medium">13</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-medium border-t pt-2">
+                            <span>Total Dinner:</span>
+                            <span>28</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Billing Report -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">?? Monthly Billing Report</h3>
+                <div class="flex space-x-3">
+                    <select id="report-month" onchange="updateMonthlyReport()" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                    <select id="report-year" onchange="updateMonthlyReport()" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                    <button onclick="exportMonthlyReport()" class="btn-gradient text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-sm">Export Monthly Report</button>
+                </div>
+            </div>
+            
+            <!-- Monthly Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-blue-600" id="monthly-total-meals">156</div>
+                    <div class="text-sm text-blue-800">Total Meals</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-green-600">?<span id="monthly-total-revenue">9,360</span></div>
+                    <div class="text-sm text-green-800">Total Revenue</div>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-yellow-600">?<span id="monthly-collected">7,200</span></div>
+                    <div class="text-sm text-yellow-800">Collected</div>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-red-600">?<span id="monthly-pending">2,160</span></div>
+                    <div class="text-sm text-red-800">Pending</div>
+                </div>
+            </div>
+            
+            <!-- User Bills Table -->
+            <div class="overflow-x-auto mobile-scroll">
+                <table class="w-full text-xs sm:text-sm min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium text-gray-900">User</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Lunches</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Dinners</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Total Meals</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Amount Due</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Payment Status</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Last Action By</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-900">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthly-bills-table" class="divide-y divide-gray-200">
+                        <!-- Table rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div id="pwa-install-prompt" class="pwa-install-prompt">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span class="text-white text-xl">???</span>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-gray-900">Install Canteen Manager</h3>
+                <p class="text-sm text-gray-600">Get quick access from your home screen</p>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="dismissPWAPrompt()" class="px-3 py-1 text-sm text-gray-600 hover:text-gray-800">Later</button>
+                <button onclick="installPWA()" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 touch-target">Install</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation (for logged in users) -->
+    <div id="mobile-bottom-nav" class="mobile-nav hidden sm:hidden">
+        <div class="flex justify-around items-center">
+            <button onclick="scrollToTop()" class="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-blue-600 touch-target">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
+                </svg>
+                <span class="text-xs mt-1">Top</span>
+            </button>
+            <button onclick="showQuickActions()" class="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-blue-600 touch-target">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span class="text-xs mt-1">Actions</span>
+            </button>
+            <button onclick="refreshData()" class="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-blue-600 touch-target">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                <span class="text-xs mt-1">Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let userRole = null; // 'admin', 'manager', or 'user'
+        let mealPrice = 60;
+        let userMeals = {
+            lunch: { selected: false, type: null },
+            dinner: { selected: false, type: null }
+        };
+        
+        // Time slot settings
+        let timeSlots = {
+            lunch: { start: '09:00', end: '11:00' },
+            dinner: { start: '16:00', end: '18:00' }
+        };
+        
+        // Password change state
+        let passwordChangeTarget = { username: '', role: '' };
+        
+        // Calendar State
+        let currentCalendarDate = new Date();
+        let selectedDate = null;
+        let futureMeals = {}; // Store future meal selections by date
+
+        // Sample data with roles
+        let users = [
+            { username: 'user1', password: 'password', role: 'user', meals: { lunch: 12, dinner: 8 } },
+            { username: 'user2', password: 'password', role: 'user', meals: { lunch: 15, dinner: 10 } },
+            { username: 'user3', password: 'password', role: 'user', meals: { lunch: 20, dinner: 18 } },
+            { username: 'user4', password: 'password', role: 'user', meals: { lunch: 8, dinner: 12 } },
+            { username: 'user5', password: 'password', role: 'user', meals: { lunch: 22, dinner: 15 } }
+        ];
+
+        let managers = [
+            { username: 'manager', password: 'manager123', role: 'manager' },
+            { username: 'manager2', password: 'manager123', role: 'manager' }
+        ];
+
+        let admins = [
+            { username: 'admin', password: 'admin123', role: 'admin' }
+        ];
+
+        // Action tracking for billing changes
+        let billingActions = {}; // Tracks who made changes to billing status
+
+        let notifications = [
+            { message: '??? Lunch is ready! Please collect your meal from the canteen.', time: '2 minutes ago', sender: 'System', senderRole: 'system' }
+        ];
+
+        // Monthly billing data - tracks payment status for each user by month/year
+        let monthlyBills = {
+            '2024-11': {
+                'user1': { lunches: 12, dinners: 8, totalAmount: 1200, paid: true, paidDate: '2024-11-28' },
+                'user2': { lunches: 15, dinners: 10, totalAmount: 1500, paid: false, paidDate: null },
+                'user3': { lunches: 20, dinners: 18, totalAmount: 2280, paid: true, paidDate: '2024-11-25' },
+                'user4': { lunches: 8, dinners: 12, totalAmount: 1200, paid: false, paidDate: null },
+                'user5': { lunches: 22, dinners: 15, totalAmount: 2220, paid: true, paidDate: '2024-11-30' }
+            },
+            '2024-12': {
+                'user1': { lunches: 18, dinners: 14, totalAmount: 1920, paid: false, paidDate: null },
+                'user2': { lunches: 16, dinners: 12, totalAmount: 1680, paid: true, paidDate: '2024-12-05' },
+                'user3': { lunches: 22, dinners: 20, totalAmount: 2520, paid: false, paidDate: null },
+                'user4': { lunches: 10, dinners: 15, totalAmount: 1500, paid: false, paidDate: null },
+                'user5': { lunches: 25, dinners: 18, totalAmount: 2580, paid: true, paidDate: '2024-12-10' }
+            }
+        };
+
+        // Initialize app
+        function init() {
+            updateTimeSlots();
+            setInterval(updateTimeSlots, 60000); // Update every minute
+            generateSampleMealData();
+            showLogin();
+            updateTodayDate();
+        }
+
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const todayElement = document.getElementById('today-date');
+            if (todayElement) {
+                todayElement.textContent = today.toLocaleDateString('en-US', options);
+            }
+        }
+        
+        // Generate sample meal data for calendar
+        function generateSampleMealData() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            // Generate random meal data for the current month
+            for (let day = 1; day <= 31; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                if (date.getMonth() === currentMonth && date <= today) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    futureMeals[dateStr] = {
+                        lunch: Math.random() > 0.3 ? { selected: true, type: Math.random() > 0.5 ? 'veg' : 'non-veg' } : { selected: false, type: null },
+                        dinner: Math.random() > 0.4 ? { selected: true, type: Math.random() > 0.5 ? 'veg' : 'non-veg' } : { selected: false, type: null }
+                    };
+                }
+            }
+        }
+
+        // Authentication
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Hide any previous error messages
+            document.getElementById('login-error').classList.add('hidden');
+
+            // Check admin credentials
+            const admin = admins.find(a => a.username === username && a.password === password);
+            if (admin) {
+                currentUser = username;
+                userRole = 'admin';
+                showAdminDashboard();
+                return;
+            }
+
+            // Check manager credentials
+            const manager = managers.find(m => m.username === username && m.password === password);
+            if (manager) {
+                currentUser = username;
+                userRole = 'manager';
+                showManagerDashboard();
+                return;
+            }
+
+            // Check user credentials
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                currentUser = username;
+                userRole = 'user';
+                showUserDashboard();
+                return;
+            }
+
+            // Show error message for invalid credentials
+            document.getElementById('login-error').classList.remove('hidden');
+        }
+
+        function logout() {
+            currentUser = null;
+            userRole = null;
+            showLogin();
+        }
+
+        // Screen Management
+        function showLogin() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.remove('hidden');
+            document.getElementById('user-menu').classList.add('hidden');
+        }
+
+        function showUserDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.remove('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Welcome, ${currentUser}!`;
+            document.getElementById('role-badge').textContent = 'User';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+            updateUserSummary();
+            loadNotifications();
+            generateCalendar();
+        }
+
+        function showManagerDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Manager: ${currentUser}`;
+            document.getElementById('role-badge').textContent = 'Manager';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+            updateManagerStats();
+            loadNotifications();
+            initializeManagerMonthlyReport();
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Admin: ${currentUser}`;
+            document.getElementById('role-badge').textContent = 'Admin';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800';
+            updateAdminStats();
+            loadUserList();
+            loadNotifications();
+            initializeMonthlyReport();
+        }
+
+        // Time Slot Management
+        function updateTimeSlots() {
+            const now = new Date();
+            const currentTime = now.getHours() * 100 + now.getMinutes(); // Convert to HHMM format
+            
+            // Parse time slots
+            const lunchStart = parseInt(timeSlots.lunch.start.replace(':', ''));
+            const lunchEnd = parseInt(timeSlots.lunch.end.replace(':', ''));
+            const dinnerStart = parseInt(timeSlots.dinner.start.replace(':', ''));
+            const dinnerEnd = parseInt(timeSlots.dinner.end.replace(':', ''));
+            
+            // Update lunch status
+            const lunchStatus = document.getElementById('lunch-status');
+            const lunchBadge = document.getElementById('lunch-badge');
+            
+            if (lunchStatus && lunchBadge) {
+                // Update display text with current time slots
+                const lunchTimeText = `??? Lunch (${formatTime(timeSlots.lunch.start)} - ${formatTime(timeSlots.lunch.end)})`;
+                lunchStatus.querySelector('span').textContent = lunchTimeText;
+                
+                if (currentTime >= lunchStart && currentTime < lunchEnd) {
+                    lunchStatus.className = 'p-4 rounded-lg border-2 border-green-300 bg-green-50';
+                    lunchBadge.className = 'px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800';
+                    lunchBadge.textContent = 'Open';
+                } else {
+                    lunchStatus.className = 'p-4 rounded-lg border-2 border-gray-300 bg-gray-50';
+                    lunchBadge.className = 'px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
+                    lunchBadge.textContent = 'Closed';
+                }
+            }
+
+            // Update dinner status
+            const dinnerStatus = document.getElementById('dinner-status');
+            const dinnerBadge = document.getElementById('dinner-badge');
+            
+            if (dinnerStatus && dinnerBadge) {
+                // Update display text with current time slots
+                const dinnerTimeText = `?? Dinner (${formatTime(timeSlots.dinner.start)} - ${formatTime(timeSlots.dinner.end)})`;
+                dinnerStatus.querySelector('span').textContent = dinnerTimeText;
+                
+                if (currentTime >= dinnerStart && currentTime < dinnerEnd) {
+                    dinnerStatus.className = 'p-4 rounded-lg border-2 border-green-300 bg-green-50';
+                    dinnerBadge.className = 'px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800';
+                    dinnerBadge.textContent = 'Open';
+                } else {
+                    dinnerStatus.className = 'p-4 rounded-lg border-2 border-gray-300 bg-gray-50';
+                    dinnerBadge.className = 'px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
+                    dinnerBadge.textContent = 'Closed';
+                }
+            }
+        }
+        
+        function formatTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        // Meal Selection
+        function updateMealSelection(meal, choice) {
+            const now = new Date();
+            const currentTime = now.getHours() * 100 + now.getMinutes();
+            
+            // Parse time slots
+            const lunchStart = parseInt(timeSlots.lunch.start.replace(':', ''));
+            const lunchEnd = parseInt(timeSlots.lunch.end.replace(':', ''));
+            const dinnerStart = parseInt(timeSlots.dinner.start.replace(':', ''));
+            const dinnerEnd = parseInt(timeSlots.dinner.end.replace(':', ''));
+            
+            // Check time slots
+            if (meal === 'lunch' && (currentTime < lunchStart || currentTime >= lunchEnd)) {
+                alert(`Lunch selection is only available between ${formatTime(timeSlots.lunch.start)} - ${formatTime(timeSlots.lunch.end)}`);
+                return;
+            }
+            
+            if (meal === 'dinner' && (currentTime < dinnerStart || currentTime >= dinnerEnd)) {
+                alert(`Dinner selection is only available between ${formatTime(timeSlots.dinner.start)} - ${formatTime(timeSlots.dinner.end)}`);
+                return;
+            }
+
+            userMeals[meal].selected = choice === 'eat';
+            
+            const typeDiv = document.getElementById(`${meal}-type`);
+            if (choice === 'eat') {
+                typeDiv.classList.remove('hidden');
+            } else {
+                typeDiv.classList.add('hidden');
+                userMeals[meal].type = null;
+            }
+        }
+
+        function updateMealType(meal, type) {
+            userMeals[meal].type = type;
+            alert(`${meal.charAt(0).toUpperCase() + meal.slice(1)} selection updated: ${type}`);
+        }
+
+        // User Dashboard Functions
+        function updateUserSummary() {
+            // Calculate meals from calendar data
+            let totalLunches = 0;
+            let totalDinners = 0;
+            
+            Object.values(futureMeals).forEach(dayMeals => {
+                if (dayMeals.lunch && dayMeals.lunch.selected) totalLunches++;
+                if (dayMeals.dinner && dayMeals.dinner.selected) totalDinners++;
+            });
+            
+            const totalMeals = totalLunches + totalDinners;
+            const monthlyBill = totalMeals * mealPrice;
+            
+            document.getElementById('total-lunches').textContent = totalLunches;
+            document.getElementById('total-dinners').textContent = totalDinners;
+            document.getElementById('total-meals').textContent = totalMeals;
+            document.getElementById('monthly-bill').textContent = `?${monthlyBill}`;
+        }
+
+        function loadNotifications() {
+            // Load notifications for all roles
+            const notificationContainers = [
+                'notification-list',        // User dashboard
+                'manager-notification-list', // Manager dashboard
+                'admin-notification-list'    // Admin dashboard
+            ];
+            
+            notificationContainers.forEach(containerId => {
+                const notificationList = document.getElementById(containerId);
+                if (notificationList) {
+                    notificationList.innerHTML = '';
+                    
+                    notifications.forEach(notification => {
+                        const div = document.createElement('div');
+                        div.className = 'p-3 bg-blue-50 border-l-4 border-blue-400 rounded';
+                        
+                        // Determine sender badge color based on role
+                        let senderBadgeClass = 'bg-gray-100 text-gray-800';
+                        if (notification.senderRole === 'admin') {
+                            senderBadgeClass = 'bg-red-100 text-red-800';
+                        } else if (notification.senderRole === 'manager') {
+                            senderBadgeClass = 'bg-yellow-100 text-yellow-800';
+                        } else if (notification.senderRole === 'system') {
+                            senderBadgeClass = 'bg-blue-100 text-blue-800';
+                        }
+                        
+                        div.innerHTML = `
+                            <p class="text-sm text-blue-800">${notification.message}</p>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${senderBadgeClass}">
+                                    Sent by: ${notification.sender}
+                                </span>
+                                <p class="text-xs text-blue-600">${notification.time}</p>
+                            </div>
+                        `;
+                        notificationList.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        // Manager Functions
+        function updateManagerStats() {
+            document.getElementById('manager-total-users').textContent = users.length;
+            document.getElementById('manager-today-lunch').textContent = '32';
+            document.getElementById('manager-today-dinner').textContent = '28';
+            document.getElementById('manager-daily-revenue').textContent = (32 + 28) * mealPrice;
+        }
+
+        function managerSendNotification() {
+            const message = document.getElementById('manager-notification-text').value;
+            if (!message) {
+                alert('Please enter a notification message');
+                return;
+            }
+            
+            notifications.unshift({
+                message: message,
+                time: 'Just now',
+                sender: currentUser,
+                senderRole: 'manager'
+            });
+            
+            document.getElementById('manager-notification-text').value = '';
+            loadNotifications(); // Refresh notifications for all users
+            alert('Notification sent to all users!');
+        }
+
+        function exportTodayReport() {
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + `Today's Canteen Report - ${dateStr}\n`
+                + "Meal,Type,Count,Revenue\n"
+                + "Lunch,Veg,18,?1080\n"
+                + "Lunch,Non-Veg,14,?840\n"
+                + "Dinner,Veg,15,?900\n"
+                + "Dinner,Non-Veg,13,?780\n"
+                + `Total,All,60,?${(32 + 28) * mealPrice}\n`;
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `today_report_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportManagerMonthlyReport() {
+            const month = document.getElementById('manager-report-month').value;
+            const year = document.getElementById('manager-report-year').value;
+            const monthKey = `${year}-${String(parseInt(month) + 1).padStart(2, '0')}`;
+            const monthData = monthlyBills[monthKey] || {};
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            const monthName = monthNames[parseInt(month)];
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Monthly Billing Report - ${monthName} ${year}\n`;
+            csvContent += "User,Lunches,Dinners,Total Meals,Amount Due,Payment Status,Paid Date\n";
+            
+            users.forEach(user => {
+                const userBill = monthData[user.username] || { 
+                    lunches: 0, 
+                    dinners: 0, 
+                    totalAmount: 0, 
+                    paid: false, 
+                    paidDate: null 
+                };
+                
+                const totalMeals = userBill.lunches + userBill.dinners;
+                const paymentStatus = userBill.paid ? 'Paid' : 'Pending';
+                const paidDate = userBill.paidDate || 'N/A';
+                
+                csvContent += `${user.username},${userBill.lunches},${userBill.dinners},${totalMeals},?${userBill.totalAmount},${paymentStatus},${paidDate}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `monthly_billing_${monthName}_${year}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function initializeManagerMonthlyReport() {
+            const now = new Date();
+            document.getElementById('manager-report-month').value = now.getMonth();
+            document.getElementById('manager-report-year').value = now.getFullYear();
+            updateManagerMonthlyReport();
+        }
+
+        function updateManagerMonthlyReport() {
+            const month = document.getElementById('manager-report-month').value;
+            const year = document.getElementById('manager-report-year').value;
+            const monthKey = `${year}-${String(parseInt(month) + 1).padStart(2, '0')}`;
+            
+            const monthData = monthlyBills[monthKey] || {};
+            
+            // Calculate totals
+            let totalMeals = 0;
+            let totalRevenue = 0;
+            let totalCollected = 0;
+            let totalPending = 0;
+            
+            Object.values(monthData).forEach(userBill => {
+                totalMeals += userBill.lunches + userBill.dinners;
+                totalRevenue += userBill.totalAmount;
+                if (userBill.paid) {
+                    totalCollected += userBill.totalAmount;
+                } else {
+                    totalPending += userBill.totalAmount;
+                }
+            });
+            
+            // Update summary cards
+            document.getElementById('manager-monthly-total-meals').textContent = totalMeals;
+            document.getElementById('manager-monthly-total-revenue').textContent = totalRevenue.toLocaleString();
+            document.getElementById('manager-monthly-collected').textContent = totalCollected.toLocaleString();
+            document.getElementById('manager-monthly-pending').textContent = totalPending.toLocaleString();
+            
+            // Update table (read-only for manager)
+            updateManagerMonthlyBillsTable(monthKey, monthData);
+        }
+
+        function updateManagerMonthlyBillsTable(monthKey, monthData) {
+            const tableBody = document.getElementById('manager-monthly-bills-table');
+            tableBody.innerHTML = '';
+            
+            users.forEach(user => {
+                const userBill = monthData[user.username] || { 
+                    lunches: 0, 
+                    dinners: 0, 
+                    totalAmount: 0, 
+                    paid: false, 
+                    paidDate: null 
+                };
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const totalMeals = userBill.lunches + userBill.dinners;
+                const paymentStatus = userBill.paid ? 'Paid' : 'Pending';
+                const statusClass = userBill.paid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                const paidInfo = userBill.paid ? `(${userBill.paidDate})` : '';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900">${user.username}</td>
+                    <td class="px-4 py-3 text-center">${userBill.lunches}</td>
+                    <td class="px-4 py-3 text-center">${userBill.dinners}</td>
+                    <td class="px-4 py-3 text-center font-medium">${totalMeals}</td>
+                    <td class="px-4 py-3 text-center font-medium">?${userBill.totalAmount}</td>
+                    <td class="px-4 py-3 text-center">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                            ${paymentStatus} ${paidInfo}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="managerTogglePaymentStatus('${user.username}', '${monthKey}')" 
+                                class="px-3 py-1 text-xs rounded-md transition-colors ${userBill.paid ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                            ${userBill.paid ? 'Mark Unpaid' : 'Mark Paid'}
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Admin Functions
+        function updateAdminStats() {
+            document.getElementById('total-users').textContent = users.length;
+            document.getElementById('today-lunch').textContent = '32';
+            document.getElementById('today-dinner').textContent = '28';
+            document.getElementById('daily-revenue').textContent = (32 + 28) * mealPrice;
+        }
+
+        function addUser() {
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const role = document.getElementById('new-user-role').value;
+            
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+            
+            // Check if username already exists in any role
+            if (users.find(u => u.username === username) || 
+                managers.find(m => m.username === username) || 
+                admins.find(a => a.username === username)) {
+                alert('Username already exists');
+                return;
+            }
+            
+            // Check admin limit
+            if (role === 'admin' && admins.length >= 5) {
+                alert('Maximum 5 admins allowed. Cannot add more admins.');
+                return;
+            }
+            
+            if (role === 'admin') {
+                admins.push({
+                    username: username,
+                    password: password,
+                    role: 'admin'
+                });
+            } else if (role === 'manager') {
+                managers.push({
+                    username: username,
+                    password: password,
+                    role: 'manager'
+                });
+            } else {
+                users.push({
+                    username: username,
+                    password: password,
+                    role: 'user',
+                    meals: { lunch: 0, dinner: 0 }
+                });
+            }
+            
+            document.getElementById('new-username').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('new-user-role').value = 'user';
+            loadUserList();
+            updateAdminStats();
+            alert(`${role.charAt(0).toUpperCase() + role.slice(1)} added successfully!`);
+        }
+
+        function removeUser(username, role) {
+            if (confirm(`Are you sure you want to remove ${role}: ${username}?`)) {
+                if (role === 'admin') {
+                    admins = admins.filter(a => a.username !== username);
+                } else if (role === 'manager') {
+                    managers = managers.filter(m => m.username !== username);
+                } else {
+                    users = users.filter(u => u.username !== username);
+                }
+                loadUserList();
+                updateAdminStats();
+                alert(`${role.charAt(0).toUpperCase() + role.slice(1)} removed successfully!`);
+            }
+        }
+
+        function loadUserList() {
+            const userList = document.getElementById('user-list');
+            const userCount = document.getElementById('user-count');
+            userList.innerHTML = '';
+            
+            const totalUsers = admins.length + managers.length + users.length;
+            userCount.textContent = `Total: ${totalUsers} users`;
+            
+            // Add admins
+            admins.forEach(admin => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-3 bg-red-50 rounded-lg border border-red-200';
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                            <span class="text-red-600 font-bold text-sm">A</span>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900">${admin.username}</div>
+                            <div class="text-xs text-red-600">Administrator</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="openPasswordModal('${admin.username}', 'admin')" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 rounded bg-blue-100 hover:bg-blue-200 transition-colors">Change Password</button>
+                        <button onclick="removeUser('${admin.username}', 'admin')" class="text-red-600 hover:text-red-800 text-xs px-2 py-1 rounded bg-red-100 hover:bg-red-200 transition-colors">Remove</button>
+                    </div>
+                `;
+                userList.appendChild(div);
+            });
+            
+            // Add managers
+            managers.forEach(manager => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-3 bg-yellow-50 rounded-lg border border-yellow-200';
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <span class="text-yellow-600 font-bold text-sm">M</span>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900">${manager.username}</div>
+                            <div class="text-xs text-yellow-600">Manager</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="openPasswordModal('${manager.username}', 'manager')" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 rounded bg-blue-100 hover:bg-blue-200 transition-colors">Change Password</button>
+                        <button onclick="removeUser('${manager.username}', 'manager')" class="text-red-600 hover:text-red-800 text-xs px-2 py-1 rounded bg-red-100 hover:bg-red-200 transition-colors">Remove</button>
+                    </div>
+                `;
+                userList.appendChild(div);
+            });
+            
+            // Add regular users
+            users.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200';
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-600 font-bold text-sm">U</span>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900">${user.username}</div>
+                            <div class="text-xs text-blue-600">User</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="openPasswordModal('${user.username}', 'user')" class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 rounded bg-blue-100 hover:bg-blue-200 transition-colors">Change Password</button>
+                        <button onclick="removeUser('${user.username}', 'user')" class="text-red-600 hover:text-red-800 text-xs px-2 py-1 rounded bg-red-100 hover:bg-red-200 transition-colors">Remove</button>
+                    </div>
+                `;
+                userList.appendChild(div);
+            });
+        }
+
+        function updateMealPrice() {
+            const newPrice = document.getElementById('meal-price').value;
+            if (newPrice && newPrice > 0) {
+                mealPrice = parseInt(newPrice);
+                updateAdminStats();
+                alert(`Meal price updated to ?${mealPrice}`);
+            }
+        }
+
+        function sendNotification() {
+            const message = document.getElementById('notification-text').value;
+            if (!message) {
+                alert('Please enter a notification message');
+                return;
+            }
+            
+            notifications.unshift({
+                message: message,
+                time: 'Just now',
+                sender: currentUser,
+                senderRole: 'admin'
+            });
+            
+            document.getElementById('notification-text').value = '';
+            loadNotifications(); // Refresh notifications for all users
+            alert('Notification sent to all users!');
+        }
+
+        function exportReport() {
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + `Daily Canteen Report - ${dateStr}\n`
+                + "Meal,Type,Count,Revenue\n"
+                + "Lunch,Veg,18,?1080\n"
+                + "Lunch,Non-Veg,14,?840\n"
+                + "Dinner,Veg,15,?900\n"
+                + "Dinner,Non-Veg,13,?780\n"
+                + `Total,All,60,?${(32 + 28) * mealPrice}\n`;
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `canteen_report_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Monthly Billing Functions (Admin)
+        function initializeMonthlyReport() {
+            const now = new Date();
+            document.getElementById('report-month').value = now.getMonth();
+            document.getElementById('report-year').value = now.getFullYear();
+            updateMonthlyReport();
+        }
+
+        function updateMonthlyReport() {
+            const month = document.getElementById('report-month').value;
+            const year = document.getElementById('report-year').value;
+            const monthKey = `${year}-${String(parseInt(month) + 1).padStart(2, '0')}`;
+            
+            const monthData = monthlyBills[monthKey] || {};
+            
+            // Calculate totals
+            let totalMeals = 0;
+            let totalRevenue = 0;
+            let totalCollected = 0;
+            let totalPending = 0;
+            
+            Object.values(monthData).forEach(userBill => {
+                totalMeals += userBill.lunches + userBill.dinners;
+                totalRevenue += userBill.totalAmount;
+                if (userBill.paid) {
+                    totalCollected += userBill.totalAmount;
+                } else {
+                    totalPending += userBill.totalAmount;
+                }
+            });
+            
+            // Update summary cards
+            document.getElementById('monthly-total-meals').textContent = totalMeals;
+            document.getElementById('monthly-total-revenue').textContent = totalRevenue.toLocaleString();
+            document.getElementById('monthly-collected').textContent = totalCollected.toLocaleString();
+            document.getElementById('monthly-pending').textContent = totalPending.toLocaleString();
+            
+            // Update table
+            updateMonthlyBillsTable(monthKey, monthData);
+        }
+
+        function updateMonthlyBillsTable(monthKey, monthData) {
+            const tableBody = document.getElementById('monthly-bills-table');
+            tableBody.innerHTML = '';
+            
+            users.forEach(user => {
+                const userBill = monthData[user.username] || { 
+                    lunches: 0, 
+                    dinners: 0, 
+                    totalAmount: 0, 
+                    paid: false, 
+                    paidDate: null 
+                };
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const totalMeals = userBill.lunches + userBill.dinners;
+                const paymentStatus = userBill.paid ? 'Paid' : 'Pending';
+                const statusClass = userBill.paid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                const paidInfo = userBill.paid ? `(${userBill.paidDate})` : '';
+                
+                // Get last action info
+                const actionKey = `${monthKey}-${user.username}`;
+                const actions = billingActions[actionKey] || [];
+                const lastAction = actions.length > 0 ? actions[actions.length - 1] : null;
+                const lastActionInfo = lastAction ? 
+                    `${lastAction.actionBy} (${lastAction.role.charAt(0).toUpperCase() + lastAction.role.slice(1)})` : 
+                    'System';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-900">${user.username}</td>
+                    <td class="px-4 py-3 text-center">${userBill.lunches}</td>
+                    <td class="px-4 py-3 text-center">${userBill.dinners}</td>
+                    <td class="px-4 py-3 text-center font-medium">${totalMeals}</td>
+                    <td class="px-4 py-3 text-center font-medium">?${userBill.totalAmount}</td>
+                    <td class="px-4 py-3 text-center">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                            ${paymentStatus} ${paidInfo}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-center text-xs text-gray-600">
+                        ${lastActionInfo}
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="togglePaymentStatus('${user.username}', '${monthKey}')" 
+                                class="px-3 py-1 text-xs rounded-md transition-colors ${userBill.paid ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                            ${userBill.paid ? 'Mark Unpaid' : 'Mark Paid'}
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function togglePaymentStatus(username, monthKey) {
+            if (!monthlyBills[monthKey]) {
+                monthlyBills[monthKey] = {};
+            }
+            
+            if (!monthlyBills[monthKey][username]) {
+                // Create new bill entry if it doesn't exist
+                monthlyBills[monthKey][username] = {
+                    lunches: 0,
+                    dinners: 0,
+                    totalAmount: 0,
+                    paid: false,
+                    paidDate: null
+                };
+            }
+            
+            const userBill = monthlyBills[monthKey][username];
+            userBill.paid = !userBill.paid;
+            
+            // Track who made the action
+            const actionKey = `${monthKey}-${username}`;
+            if (!billingActions[actionKey]) {
+                billingActions[actionKey] = [];
+            }
+            
+            const actionTime = new Date().toISOString().split('T')[0];
+            billingActions[actionKey].push({
+                actionBy: currentUser,
+                role: userRole,
+                action: userBill.paid ? 'marked_paid' : 'marked_unpaid',
+                timestamp: actionTime
+            });
+            
+            if (userBill.paid) {
+                userBill.paidDate = actionTime;
+                alert(`Payment marked as received for ${username}`);
+            } else {
+                userBill.paidDate = null;
+                alert(`Payment status reset to pending for ${username}`);
+            }
+            
+            updateMonthlyReport();
+        }
+
+        function managerTogglePaymentStatus(username, monthKey) {
+            if (!monthlyBills[monthKey]) {
+                monthlyBills[monthKey] = {};
+            }
+            
+            if (!monthlyBills[monthKey][username]) {
+                // Create new bill entry if it doesn't exist
+                monthlyBills[monthKey][username] = {
+                    lunches: 0,
+                    dinners: 0,
+                    totalAmount: 0,
+                    paid: false,
+                    paidDate: null
+                };
+            }
+            
+            const userBill = monthlyBills[monthKey][username];
+            userBill.paid = !userBill.paid;
+            
+            // Track who made the action
+            const actionKey = `${monthKey}-${username}`;
+            if (!billingActions[actionKey]) {
+                billingActions[actionKey] = [];
+            }
+            
+            const actionTime = new Date().toISOString().split('T')[0];
+            billingActions[actionKey].push({
+                actionBy: currentUser,
+                role: userRole,
+                action: userBill.paid ? 'marked_paid' : 'marked_unpaid',
+                timestamp: actionTime
+            });
+            
+            if (userBill.paid) {
+                userBill.paidDate = actionTime;
+                alert(`Payment marked as received for ${username}`);
+            } else {
+                userBill.paidDate = null;
+                alert(`Payment status reset to pending for ${username}`);
+            }
+            
+            updateManagerMonthlyReport();
+        }
+
+        function exportMonthlyReport() {
+            const month = document.getElementById('report-month').value;
+            const year = document.getElementById('report-year').value;
+            const monthKey = `${year}-${String(parseInt(month) + 1).padStart(2, '0')}`;
+            const monthData = monthlyBills[monthKey] || {};
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            const monthName = monthNames[parseInt(month)];
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Monthly Billing Report - ${monthName} ${year}\n`;
+            csvContent += "User,Lunches,Dinners,Total Meals,Amount Due,Payment Status,Paid Date\n";
+            
+            users.forEach(user => {
+                const userBill = monthData[user.username] || { 
+                    lunches: 0, 
+                    dinners: 0, 
+                    totalAmount: 0, 
+                    paid: false, 
+                    paidDate: null 
+                };
+                
+                const totalMeals = userBill.lunches + userBill.dinners;
+                const paymentStatus = userBill.paid ? 'Paid' : 'Pending';
+                const paidDate = userBill.paidDate || 'N/A';
+                
+                csvContent += `${user.username},${userBill.lunches},${userBill.dinners},${totalMeals},?${userBill.totalAmount},${paymentStatus},${paidDate}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `monthly_billing_${monthName}_${year}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Calendar Functions (User only)
+        function generateCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // Update month display
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = '';
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'p-2';
+                calendarGrid.appendChild(emptyCell);
+            }
+            
+            // Add days of the month
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayCell = document.createElement('div');
+                
+                // Determine meal status for styling
+                const mealData = futureMeals[dateStr];
+                let bgColor = 'bg-gray-100';
+                let borderColor = 'border-gray-300';
+                
+                if (mealData) {
+                    const hasLunch = mealData.lunch && mealData.lunch.selected;
+                    const hasDinner = mealData.dinner && mealData.dinner.selected;
+                    
+                    if (hasLunch && hasDinner) {
+                        bgColor = 'bg-green-200';
+                        borderColor = 'border-green-400';
+                    } else if (hasLunch) {
+                        bgColor = 'bg-blue-200';
+                        borderColor = 'border-blue-400';
+                    } else if (hasDinner) {
+                        bgColor = 'bg-purple-200';
+                        borderColor = 'border-purple-400';
+                    }
+                }
+                
+                // Check if it's today
+                const isToday = date.toDateString() === today.toDateString();
+                const isPast = date < today;
+                const isFuture = date > today;
+                
+                dayCell.className = `p-2 h-12 border ${borderColor} ${bgColor} rounded cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center text-sm font-medium relative`;
+                
+                if (isToday) {
+                    dayCell.classList.add('ring-2', 'ring-primary');
+                }
+                
+                if (isPast) {
+                    dayCell.classList.add('opacity-60');
+                }
+                
+                dayCell.innerHTML = `
+                    <span class="${isToday ? 'text-primary font-bold' : ''}">${day}</span>
+                `;
+                
+                // Add click handler for future dates
+                if (isFuture || isToday) {
+                    dayCell.onclick = () => openMealModal(dateStr);
+                }
+                
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+        
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            generateCalendar();
+        }
+        
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            generateCalendar();
+        }
+        
+        function openMealModal(dateStr) {
+            selectedDate = dateStr;
+            const date = new Date(dateStr);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('modal-date').textContent = date.toLocaleDateString('en-US', options);
+            
+            // Load existing meal data if available
+            const existingMeals = futureMeals[dateStr];
+            if (existingMeals) {
+                // Set lunch selection
+                if (existingMeals.lunch && existingMeals.lunch.selected) {
+                    document.querySelector('input[name="modal-lunch"][value="eat"]').checked = true;
+                    document.getElementById('modal-lunch-type').classList.remove('hidden');
+                    if (existingMeals.lunch.type) {
+                        document.querySelector(`input[name="modal-lunch-type"][value="${existingMeals.lunch.type}"]`).checked = true;
+                    }
+                } else {
+                    document.querySelector('input[name="modal-lunch"][value="skip"]').checked = true;
+                    document.getElementById('modal-lunch-type').classList.add('hidden');
+                }
+                
+                // Set dinner selection
+                if (existingMeals.dinner && existingMeals.dinner.selected) {
+                    document.querySelector('input[name="modal-dinner"][value="eat"]').checked = true;
+                    document.getElementById('modal-dinner-type').classList.remove('hidden');
+                    if (existingMeals.dinner.type) {
+                        document.querySelector(`input[name="modal-dinner-type"][value="${existingMeals.dinner.type}"]`).checked = true;
+                    }
+                } else {
+                    document.querySelector('input[name="modal-dinner"][value="skip"]').checked = true;
+                    document.getElementById('modal-dinner-type').classList.add('hidden');
+                }
+            } else {
+                // Reset form
+                document.querySelectorAll('input[name^="modal-"]').forEach(input => input.checked = false);
+                document.getElementById('modal-lunch-type').classList.add('hidden');
+                document.getElementById('modal-dinner-type').classList.add('hidden');
+            }
+            
+            document.getElementById('meal-modal').classList.remove('hidden');
+        }
+        
+        function closeMealModal() {
+            document.getElementById('meal-modal').classList.add('hidden');
+            selectedDate = null;
+        }
+        
+        function saveFutureMeal() {
+            if (!selectedDate) return;
+            
+            const lunchSelected = document.querySelector('input[name="modal-lunch"]:checked')?.value === 'eat';
+            const lunchType = document.querySelector('input[name="modal-lunch-type"]:checked')?.value || null;
+            const dinnerSelected = document.querySelector('input[name="modal-dinner"]:checked')?.value === 'eat';
+            const dinnerType = document.querySelector('input[name="modal-dinner-type"]:checked')?.value || null;
+            
+            futureMeals[selectedDate] = {
+                lunch: { selected: lunchSelected, type: lunchSelected ? lunchType : null },
+                dinner: { selected: dinnerSelected, type: dinnerSelected ? dinnerType : null }
+            };
+            
+            generateCalendar();
+            updateUserSummary();
+            closeMealModal();
+            
+            const date = new Date(selectedDate);
+            const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            alert(`Meal selection saved for ${dateStr}!`);
+        }
+        
+        // Add event listeners for modal meal selection
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'modal-lunch') {
+                const lunchTypeDiv = document.getElementById('modal-lunch-type');
+                if (e.target.value === 'eat') {
+                    lunchTypeDiv.classList.remove('hidden');
+                } else {
+                    lunchTypeDiv.classList.add('hidden');
+                }
+            }
+            
+            if (e.target.name === 'modal-dinner') {
+                const dinnerTypeDiv = document.getElementById('modal-dinner-type');
+                if (e.target.value === 'eat') {
+                    dinnerTypeDiv.classList.remove('hidden');
+                } else {
+                    dinnerTypeDiv.classList.add('hidden');
+                }
+            }
+        });
+
+        // Time Slot Update Function (Admin only)
+        function updateTimeSlotsSettings() {
+            const lunchStart = document.getElementById('lunch-start').value;
+            const lunchEnd = document.getElementById('lunch-end').value;
+            const dinnerStart = document.getElementById('dinner-start').value;
+            const dinnerEnd = document.getElementById('dinner-end').value;
+            
+            if (!lunchStart || !lunchEnd || !dinnerStart || !dinnerEnd) {
+                alert('Please fill in all time slots');
+                return;
+            }
+            
+            // Validate time ranges
+            if (lunchStart >= lunchEnd) {
+                alert('Lunch start time must be before end time');
+                return;
+            }
+            
+            if (dinnerStart >= dinnerEnd) {
+                alert('Dinner start time must be before end time');
+                return;
+            }
+            
+            timeSlots.lunch.start = lunchStart;
+            timeSlots.lunch.end = lunchEnd;
+            timeSlots.dinner.start = dinnerStart;
+            timeSlots.dinner.end = dinnerEnd;
+            
+            // Update the time slot display immediately
+            updateTimeSlots();
+            
+            alert('Time slots updated successfully!');
+        }
+        
+        // Personal Password Change Function
+        function changeOwnPassword() {
+            let currentPasswordField, newPasswordField, confirmPasswordField;
+            
+            // Get the appropriate fields based on user role
+            if (userRole === 'user') {
+                currentPasswordField = document.getElementById('current-password');
+                newPasswordField = document.getElementById('user-new-password');
+                confirmPasswordField = document.getElementById('user-confirm-password');
+            } else if (userRole === 'manager') {
+                currentPasswordField = document.getElementById('manager-current-password');
+                newPasswordField = document.getElementById('manager-new-password');
+                confirmPasswordField = document.getElementById('manager-confirm-password');
+            } else if (userRole === 'admin') {
+                currentPasswordField = document.getElementById('admin-current-password');
+                newPasswordField = document.getElementById('admin-new-password');
+                confirmPasswordField = document.getElementById('admin-confirm-password');
+            }
+            
+            const currentPassword = currentPasswordField.value;
+            const newPassword = newPasswordField.value;
+            const confirmPassword = confirmPasswordField.value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all password fields');
+                return;
+            }
+            
+            // Find current user and verify current password
+            let userArray, currentUserData;
+            if (userRole === 'admin') {
+                userArray = admins;
+            } else if (userRole === 'manager') {
+                userArray = managers;
+            } else {
+                userArray = users;
+            }
+            
+            currentUserData = userArray.find(u => u.username === currentUser);
+            
+            if (!currentUserData || currentUserData.password !== currentPassword) {
+                alert('Current password is incorrect');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('New password must be at least 6 characters long');
+                return;
+            }
+            
+            if (newPassword === currentPassword) {
+                alert('New password must be different from current password');
+                return;
+            }
+            
+            // Update password
+            currentUserData.password = newPassword;
+            
+            // Clear form fields
+            currentPasswordField.value = '';
+            newPasswordField.value = '';
+            confirmPasswordField.value = '';
+            
+            alert('Password updated successfully!');
+        }
+
+        // Password Management Functions
+        function openPasswordModal(username, role) {
+            passwordChangeTarget.username = username;
+            passwordChangeTarget.role = role;
+            
+            document.getElementById('password-change-user').textContent = username;
+            document.getElementById('password-change-role').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            document.getElementById('new-password-input').value = '';
+            document.getElementById('confirm-password-input').value = '';
+            
+            document.getElementById('password-modal').classList.remove('hidden');
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
+            passwordChangeTarget = { username: '', role: '' };
+        }
+        
+        function savePasswordChange() {
+            const newPassword = document.getElementById('new-password-input').value;
+            const confirmPassword = document.getElementById('confirm-password-input').value;
+            
+            if (!newPassword || !confirmPassword) {
+                alert('Please fill in both password fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            
+            // Update password in the appropriate array
+            let userArray;
+            if (passwordChangeTarget.role === 'admin') {
+                userArray = admins;
+            } else if (passwordChangeTarget.role === 'manager') {
+                userArray = managers;
+            } else {
+                userArray = users;
+            }
+            
+            const user = userArray.find(u => u.username === passwordChangeTarget.username);
+            if (user) {
+                user.password = newPassword;
+                alert(`Password updated successfully for ${passwordChangeTarget.username}!`);
+                closePasswordModal();
+            } else {
+                alert('User not found');
+            }
+        }
+
+        // Mobile and PWA Functions
+        let deferredPrompt;
+        let mobileMenuOpen = false;
+
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show custom install prompt after 3 seconds
+            setTimeout(() => {
+                if (!localStorage.getItem('pwa-dismissed')) {
+                    showPWAPrompt();
+                }
+            }, 3000);
+        });
+
+        function showPWAPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
+            prompt.classList.add('show');
+        }
+
+        function dismissPWAPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
+            prompt.classList.remove('show');
+            localStorage.setItem('pwa-dismissed', 'true');
+        }
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('PWA installed');
+                }
+                
+                deferredPrompt = null;
+                dismissPWAPrompt();
+            }
+        }
+
+        // Mobile Navigation
+        function toggleMobileMenu() {
+            const dropdown = document.getElementById('mobile-dropdown');
+            const navMenu = document.getElementById('mobile-nav-menu');
+            const userMenu = document.getElementById('mobile-user-menu');
+            
+            mobileMenuOpen = !mobileMenuOpen;
+            
+            if (mobileMenuOpen) {
+                dropdown.classList.remove('hidden');
+                
+                // Show appropriate menu based on login status
+                if (currentUser) {
+                    userMenu.classList.remove('hidden');
+                    navMenu.classList.add('hidden');
+                    
+                    // Update mobile user info
+                    document.getElementById('mobile-welcome-text').textContent = `Welcome, ${currentUser}!`;
+                    const mobileRoleBadge = document.getElementById('mobile-role-badge');
+                    mobileRoleBadge.textContent = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+                    
+                    if (userRole === 'admin') {
+                        mobileRoleBadge.className = 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mt-1';
+                    } else if (userRole === 'manager') {
+                        mobileRoleBadge.className = 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 mt-1';
+                    } else {
+                        mobileRoleBadge.className = 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1';
+                    }
+                } else {
+                    navMenu.classList.remove('hidden');
+                    userMenu.classList.add('hidden');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // Mobile utility functions
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showQuickActions() {
+            if (userRole === 'user') {
+                // Show meal selection for today
+                const today = new Date().toISOString().split('T')[0];
+                openMealModal(today);
+            } else if (userRole === 'manager') {
+                // Focus on notification input
+                document.getElementById('manager-notification-text').focus();
+            } else if (userRole === 'admin') {
+                // Focus on notification input
+                document.getElementById('notification-text').focus();
+            }
+        }
+
+        function refreshData() {
+            // Refresh current dashboard data
+            if (userRole === 'user') {
+                updateUserSummary();
+                generateCalendar();
+            } else if (userRole === 'manager') {
+                updateManagerStats();
+                updateManagerMonthlyReport();
+            } else if (userRole === 'admin') {
+                updateAdminStats();
+                updateMonthlyReport();
+                loadUserList();
+            }
+            
+            loadNotifications();
+            updateTimeSlots();
+            
+            // Show feedback
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span class="text-xs mt-1">Refreshing...</span>';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+            }, 1000);
+        }
+
+        // Enhanced screen management for mobile
+        function showUserDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.remove('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('mobile-bottom-nav').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Welcome, ${currentUser}!`;
+            document.getElementById('role-badge').textContent = 'User';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+            updateUserSummary();
+            loadNotifications();
+            generateCalendar();
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        function showManagerDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('mobile-bottom-nav').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Manager: ${currentUser}`;
+            document.getElementById('role-badge').textContent = 'Manager';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+            updateManagerStats();
+            loadNotifications();
+            initializeManagerMonthlyReport();
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('mobile-bottom-nav').classList.remove('hidden');
+            document.getElementById('welcome-text').textContent = `Admin: ${currentUser}`;
+            document.getElementById('role-badge').textContent = 'Admin';
+            document.getElementById('role-badge').className = 'px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800';
+            updateAdminStats();
+            loadUserList();
+            loadNotifications();
+            initializeMonthlyReport();
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('nav-menu').classList.remove('hidden');
+            document.getElementById('user-menu').classList.add('hidden');
+            document.getElementById('mobile-bottom-nav').classList.add('hidden');
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        // Touch and gesture support
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+            
+            // Swipe up to refresh (only on dashboard screens)
+            if (diff > swipeThreshold && currentUser && window.scrollY < 100) {
+                refreshData();
+            }
+        }
+
+        // Prevent zoom on double tap for better UX
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Initialize the application
+        init();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97a5ecf8855b3e27',t:'MTc1NzA3NzM5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
